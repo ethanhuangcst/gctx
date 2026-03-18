@@ -1,0 +1,21 @@
+{
+  "name": "trae-context-gist",
+  "version": "1.0.0",
+  "description": "TRAE CN 上下文管理技能 - 自动整理对话上下文并存储到 GitHub Gist",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "trae",
+    "context",
+    "gist",
+    "manager",
+    "skill"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "node-fetch": "^2.7.0"
+  }
+}
