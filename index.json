@@ -100,5 +100,45 @@
     "description": "TRAE CN 上下文笔记",
     "localPath": "/Users/ethanhuang/code/trae-context-gist.ai/.trae/trae-context-gist-notes/context_2026-03-18T03-28-42-066Z.json",
     "syncStatus": "synced"
+  },
+  "context_2026-03-18T03-50-47-698Z": {
+    "fileName": "context_2026-03-18T03-50-47-698Z.json",
+    "projectName": "traecontextgist",
+    "createdAt": "2026-03-18T03:50:47.698Z",
+    "updatedAt": "2026-03-18T03:50:47.698Z",
+    "url": null,
+    "description": "TRAE CN 上下文笔记（本地）- traecontextgist",
+    "localPath": "/Users/ethanhuang/code/trae-context-gist.ai/.trae/skills/trae-context-gist/notes/traecontextgist/context_2026-03-18T03-50-47-698Z.json",
+    "syncStatus": "local-only"
+  },
+  "context_2026-03-18T03-51-17-028Z": {
+    "fileName": "context_2026-03-18T03-51-17-028Z.json",
+    "projectName": "todoapp",
+    "createdAt": "2026-03-18T03:51:17.028Z",
+    "updatedAt": "2026-03-18T03:51:17.028Z",
+    "url": null,
+    "description": "TRAE CN 上下文笔记（本地）- todoapp",
+    "localPath": "/Users/ethanhuang/code/trae-context-gist.ai/.trae/skills/trae-context-gist/notes/todoapp/context_2026-03-18T03-51-17-028Z.json",
+    "syncStatus": "local-only"
+  },
+  "context_2026-03-18T08-10-21-423Z": {
+    "fileName": "context_2026-03-18T08-10-21-423Z.json",
+    "projectName": "featureapp",
+    "createdAt": "2026-03-18T08:10:21.424Z",
+    "updatedAt": "2026-03-18T08:10:21.424Z",
+    "url": null,
+    "description": "TRAE CN 上下文笔记（本地）- featureapp",
+    "localPath": "/Users/ethanhuang/code/trae-context-gist.ai/.trae/skills/trae-context-gist/notes/featureapp/context_2026-03-18T08-10-21-423Z.json",
+    "syncStatus": "local-only"
+  },
+  "context_2026-03-18T08-10-21-427Z": {
+    "fileName": "context_2026-03-18T08-10-21-427Z.json",
+    "projectName": "default",
+    "createdAt": "2026-03-18T08:10:21.427Z",
+    "updatedAt": "2026-03-18T08:10:21.427Z",
+    "url": null,
+    "description": "TRAE CN 上下文笔记（本地）- default",
+    "localPath": "/Users/ethanhuang/code/trae-context-gist.ai/.trae/skills/trae-context-gist/notes/default/context_2026-03-18T08-10-21-427Z.json",
+    "syncStatus": "local-only"
   }
 }
