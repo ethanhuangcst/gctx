@@ -59,12 +59,13 @@ cp .env.example .env
 GITHUB_TOKEN=your_github_token_here
 ```
 
-### 步骤 3：测试技能
+### 步骤 3：验证部署
 ```bash
-node test.js
+# 运行技能，整理一次上下文
+# 在 TRAE 中输入："整理上下文"
 ```
 
-如果看到 "✓ 上下文处理功能测试通过"，说明部署成功！
+如果看到成功消息，说明部署成功！
 
 ## 使用方法
 
