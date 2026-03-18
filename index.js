@@ -88,7 +88,7 @@ function getNotesDir() {
 
 /**
  * 分析对话上下文
- * @param {string} conversationHistory - 对话历史
+ * @param {string} conversationHistory - 对话历史（支持纯文本和 JSON 格式）
  * @returns {object} 分析结果
  */
 function analyzeContext(conversationHistory) {
@@ -96,6 +96,61 @@ function analyzeContext(conversationHistory) {
   const tasks = [];
   const decisions = [];
   
+  // 尝试解析 JSON 格式
+  try {
+    const jsonData = JSON.parse(conversationHistory);
+    
+    // 从 JSON 结构中提取数据
+    if (jsonData.completedTasks) {
+      jsonData.completedTasks.forEach(task => {
+        if (typeof task === 'string') tasks.push(task);
+      });
+    }
+    
+    if (jsonData.pendingTasks || jsonData.tasks) {
+      const pendingTasks = jsonData.pendingTasks || jsonData.tasks;
+      pendingTasks.forEach(task => {
+        if (typeof task === 'string') tasks.push(task);
+      });
+    }
+    
+    if (jsonData.keyDecisions || jsonData.decisions) {
+      const decs = jsonData.keyDecisions || jsonData.decisions;
+      decs.forEach(dec => {
+        if (typeof dec === 'string') decisions.push(dec);
+      });
+    }
+    
+    if (jsonData.importantNotes || jsonData.keyPoints) {
+      const notes = jsonData.importantNotes || jsonData.keyPoints;
+      notes.forEach(note => {
+        if (typeof note === 'string') keyPoints.push(note);
+      });
+    }
+    
+    // 如果 JSON 解析成功且有内容，直接返回
+    if (tasks.length > 0 || decisions.length > 0 || keyPoints.length > 0) {
+      const summary = `对话包含 ${tasks.length} 个任务、${keyPoints.length} 个关键点和 ${decisions.length} 个决策`;
+      
+      return {
+        summary,
+        keyPoints,
+        tasks,
+        decisions,
+        timestamp: new Date().toISOString(),
+        conversationLength: JSON.stringify(jsonData).split('\n').length,
+        metadata: {
+          version: '1.0.0',
+          skill: 'trae-context-gist',
+          format: 'json'
+        }
+      };
+    }
+  } catch (e) {
+    // 不是 JSON 格式，继续处理纯文本
+  }
+  
+  // 处理纯文本格式
   const lines = conversationHistory.split('\n');
   let currentSection = '';
   
@@ -152,7 +207,8 @@ function analyzeContext(conversationHistory) {
     conversationLength: lines.length,
     metadata: {
       version: '1.0.0',
-      skill: 'trae-context-gist'
+      skill: 'trae-context-gist',
+      format: 'text'
     }
   };
 }
