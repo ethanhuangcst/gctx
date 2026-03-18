@@ -6,6 +6,65 @@
 const fs = require('fs');
 const path = require('path');
 
+/**
+ * 从对话历史中提取项目名称
+ * @param {string} conversationHistory - 对话历史
+ * @returns {string} 项目名称
+ */
+function extractProjectName(conversationHistory) {
+  const lines = conversationHistory.split('\n');
+  
+  // 常见的项目名称关键词
+  const projectKeywords = ['项目', 'project', '任务', 'task', '应用', 'app', '系统', 'system', '服务', 'service'];
+  
+  // 尝试从对话中提取项目名称
+  for (const line of lines) {
+    const trimmedLine = line.trim();
+    
+    // 查找包含项目关键词的行
+    for (const keyword of projectKeywords) {
+      if (trimmedLine.includes(keyword)) {
+        // 尝试提取项目名称
+        const parts = trimmedLine.split(/[:：]/);
+        if (parts.length > 1) {
+          const projectName = parts[1].trim().replace(/[\s\n\r]+/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
+          if (projectName) {
+            return projectName;
+          }
+        }
+      }
+    }
+  }
+  
+  // 默认项目名称
+  return 'default';
+}
+
+/**
+ * 获取项目特定的笔记目录路径
+ * @param {string} projectName - 项目名称
+ * @returns {string} 项目笔记目录路径
+ */
+function getProjectNotesDir(projectName) {
+  // 优先使用环境变量配置的目录
+  let baseNotesDir;
+  if (process.env.LOCAL_NOTES_DIR) {
+    const notesDir = process.env.LOCAL_NOTES_DIR;
+    // 如果是相对路径，转换为绝对路径
+    if (!path.isAbsolute(notesDir)) {
+      baseNotesDir = path.join(__dirname, notesDir);
+    } else {
+      baseNotesDir = notesDir;
+    }
+  } else {
+    // 默认使用技能目录下的 notes 文件夹
+    baseNotesDir = path.join(__dirname, 'notes');
+  }
+  
+  // 添加项目子目录
+  return path.join(baseNotesDir, projectName);
+}
+
 // 加载环境变量
 const envPath = path.join(__dirname, '.env');
 if (fs.existsSync(envPath)) {
@@ -23,16 +82,6 @@ if (fs.existsSync(envPath)) {
  * @returns {string} 本地笔记目录路径
  */
 function getNotesDir() {
-  // 优先使用环境变量配置的目录
-  if (process.env.LOCAL_NOTES_DIR) {
-    const notesDir = process.env.LOCAL_NOTES_DIR;
-    // 如果是相对路径，转换为绝对路径
-    if (!path.isAbsolute(notesDir)) {
-      return path.join(__dirname, notesDir);
-    }
-    return notesDir;
-  }
-  
   // 默认使用技能目录下的 notes 文件夹
   return path.join(__dirname, 'notes');
 }
@@ -93,11 +142,12 @@ function analyzeContext(conversationHistory) {
  * 保存笔记到本地
  * @param {object} content - 笔记内容
  * @param {string} fileName - 文件名
+ * @param {string} projectName - 项目名称
  * @returns {object} 本地笔记信息
  */
-function saveNoteToLocal(content, fileName) {
-  // 获取本地笔记目录（支持配置）
-  const notesDir = getNotesDir();
+function saveNoteToLocal(content, fileName, projectName) {
+  // 获取项目特定的笔记目录
+  const notesDir = getProjectNotesDir(projectName);
   
   // 创建本地笔记目录
   if (!fs.existsSync(notesDir)) {
@@ -111,6 +161,7 @@ function saveNoteToLocal(content, fileName) {
   return {
     fileName,
     localPath: notePath,
+    projectName,
     savedAt: new Date().toISOString()
   };
 }
@@ -119,9 +170,10 @@ function saveNoteToLocal(content, fileName) {
  * 上传到 GitHub Gist
  * @param {object} content - 要上传的内容
  * @param {string} fileName - 文件名
+ * @param {string} projectName - 项目名称
  * @returns {Promise<object>} Gist 信息
  */
-async function uploadToGist(content, fileName) {
+async function uploadToGist(content, fileName, projectName) {
   const token = process.env.GITHUB_TOKEN;
   
   if (!token) {
@@ -141,6 +193,15 @@ async function uploadToGist(content, fileName) {
     }
   }
   
+  // 构建 Gist 描述，包含项目名称
+  const description = `TRAE CN 上下文笔记 - ${projectName}`;
+  
+  // 构建文件对象
+  const files = {};
+  files[fileName] = {
+    content: JSON.stringify(content, null, 2)
+  };
+  
   const response = await fetchFn('https://api.github.com/gists', {
     method: 'POST',
     headers: {
@@ -149,13 +210,9 @@ async function uploadToGist(content, fileName) {
       'User-Agent': 'TRAE-CN-ContextManager'
     },
     body: JSON.stringify({
-      description: 'TRAE CN 上下文笔记',
+      description: description,
       public: false,
-      files: {
-        [fileName]: {
-          content: JSON.stringify(content, null, 2)
-        }
-      }
+      files: files
     })
   });
   
@@ -189,10 +246,11 @@ function updateLocalIndex(gistInfo, localInfo) {
   
   const indexEntry = {
     fileName,
+    projectName: localInfo.projectName || 'default',
     createdAt: gistInfo ? gistInfo.created_at : localInfo.savedAt,
     updatedAt: gistInfo ? gistInfo.updated_at : localInfo.savedAt,
     url: gistInfo ? gistInfo.html_url : null,
-    description: gistInfo ? gistInfo.description : 'TRAE CN 上下文笔记（本地）',
+    description: gistInfo ? gistInfo.description : `TRAE CN 上下文笔记（本地）- ${localInfo.projectName || 'default'}`,
     localPath: localInfo.localPath,
     syncStatus: gistInfo ? 'synced' : 'local-only'
   };
@@ -212,9 +270,10 @@ function updateLocalIndex(gistInfo, localInfo) {
 /**
  * 搜索笔记
  * @param {string} keyword - 关键词
+ * @param {string} projectName - 项目名称（可选）
  * @returns {Array} 匹配的笔记
  */
-function searchNotes(keyword) {
+function searchNotes(keyword, projectName) {
   const indexPath = path.join(__dirname, 'index.json');
   if (!fs.existsSync(indexPath)) {
     return [];
@@ -224,10 +283,17 @@ function searchNotes(keyword) {
     const index = JSON.parse(fs.readFileSync(indexPath, 'utf8'));
     const results = [];
     
-    // 简单的关键词搜索
+    // 搜索逻辑
     Object.entries(index).forEach(([id, info]) => {
+      // 如果指定了项目名称，先检查项目名称
+      if (projectName && info.projectName !== projectName) {
+        return;
+      }
+      
+      // 关键词搜索
       if (info.fileName.includes(keyword) || 
-          (info.description && info.description.includes(keyword))) {
+          (info.description && info.description.includes(keyword)) ||
+          (info.projectName && info.projectName.includes(keyword))) {
         results.push({ id, ...info });
       }
     });
@@ -248,12 +314,15 @@ async function processContext(conversationHistory) {
     // 分析上下文
     const analysis = analyzeContext(conversationHistory);
     
+    // 提取项目名称
+    const projectName = extractProjectName(conversationHistory);
+    
     // 生成文件名
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
     const fileName = `context_${timestamp}.json`;
     
     // 首先保存到本地
-    const localInfo = saveNoteToLocal(analysis, fileName);
+    const localInfo = saveNoteToLocal(analysis, fileName, projectName);
     
     // 尝试上传到 Gist
     let gistInfo = null;
@@ -261,7 +330,7 @@ async function processContext(conversationHistory) {
     let gistError = null;
     
     try {
-      gistInfo = await uploadToGist(analysis, fileName);
+      gistInfo = await uploadToGist(analysis, fileName, projectName);
     } catch (error) {
       gistUploadSuccess = false;
       gistError = error.message;
@@ -274,10 +343,11 @@ async function processContext(conversationHistory) {
     if (gistUploadSuccess) {
       return {
         success: true,
-        message: `上下文已整理并同步到云端和本地`,
+        message: `上下文已整理并同步到云端和本地（项目：${projectName}）`,
         gistUrl: gistInfo.html_url,
         gistId: gistInfo.id,
         localPath: localInfo.localPath,
+        projectName: projectName,
         syncStatus: 'success',
         analysis: {
           summary: analysis.summary,
@@ -289,8 +359,9 @@ async function processContext(conversationHistory) {
     } else {
       return {
         success: true, // 本地保存成功，所以整体算成功
-        message: `上下文已整理并保存到本地，但同步到 Gist 失败：${gistError}`,
+        message: `上下文已整理并保存到本地，但同步到 Gist 失败：${gistError}（项目：${projectName}）`,
         localPath: localInfo.localPath,
+        projectName: projectName,
         syncStatus: 'local-only',
         error: gistError,
         analysis: {
@@ -312,9 +383,10 @@ async function processContext(conversationHistory) {
 
 /**
  * 获取所有笔记
+ * @param {string} projectName - 项目名称（可选）
  * @returns {Array} 笔记列表
  */
-function getAllNotes() {
+function getAllNotes(projectName) {
   const indexPath = path.join(__dirname, 'index.json');
   if (!fs.existsSync(indexPath)) {
     return [];
@@ -322,7 +394,14 @@ function getAllNotes() {
   
   try {
     const index = JSON.parse(fs.readFileSync(indexPath, 'utf8'));
-    return Object.entries(index).map(([id, info]) => ({ id, ...info }));
+    const notes = Object.entries(index).map(([id, info]) => ({ id, ...info }));
+    
+    // 如果指定了项目名称，过滤结果
+    if (projectName) {
+      return notes.filter(note => note.projectName === projectName);
+    }
+    
+    return notes;
   } catch (e) {
     return [];
   }
