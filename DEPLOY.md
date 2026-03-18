@@ -2,27 +2,17 @@
 
 ## 方法一：使用 Git（推荐）
 
-### 1. 克隆仓库
+### 1. 在新项目目录中克隆
 
 ```bash
-# 在任何位置克隆
-git clone https://github.com/ethanhuangcst/trae-context-gist.git ~/temp-deploy
+# 进入新项目目录
+cd /path/to/new/project
+
+# 直接克隆到技能目录
+git clone https://github.com/ethanhuangcst/trae-context-gist.git .trae/skills/trae-context-gist
 ```
 
-### 2. 复制到新项目
-
-```bash
-# 复制核心文件到新项目
-cp -r ~/temp-deploy/.env.example \
-      ~/temp-deploy/SKILL.md \
-      ~/temp-deploy/index.js \
-      ~/temp-deploy/package.json \
-      ~/temp-deploy/package-lock.json \
-      ~/temp-deploy/README.md \
-      /path/to/new/project/.trae/skills/trae-context-gist/
-```
-
-### 3. 安装和配置
+### 2. 安装和配置
 
 ```bash
 cd /path/to/new/project/.trae/skills/trae-context-gist
@@ -35,10 +25,12 @@ cp .env.example .env
 nano .env  # 添加 GITHUB_TOKEN=your_token_here
 ```
 
-### 4. 清理
+### 3. 清理 Git 信息（可选）
+
+如果不想保留 Git 历史：
 
 ```bash
-rm -rf ~/temp-deploy
+rm -rf .git
 ```
 
 ## 方法二：一键部署脚本
