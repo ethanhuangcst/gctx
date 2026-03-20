@@ -275,10 +275,20 @@
     "fileName": "context_2026-03-20T06-18-15-913Z.json",
     "projectName": "default",
     "createdAt": "2026-03-20T06:18:16Z",
-    "updatedAt": "2026-03-20T06:18:37Z",
+    "updatedAt": "2026-03-20T07:12:14Z",
     "url": "https://gist.github.com/ethanhuangcst/78c971f58bfdddeb07e9db6bf3e55aee",
     "description": "TRAE CN - default",
-    "localPath": "/Users/ethanhuang/code/trae-context-gist.ai/.trae/notes/default/context_2026-03-20T06-18-36-724Z.json",
+    "localPath": "/Users/ethanhuang/code/trae-context-gist.ai/.trae/notes/default/context_2026-03-20T07-12-13-834Z.json",
+    "syncStatus": "synced"
+  },
+  "db04babed755c7dfa9ba8e5c7f9008c8": {
+    "fileName": "context_2026-03-20T06-20-51-052Z.json",
+    "projectName": "traecontextgist",
+    "createdAt": "2026-03-20T06:20:51Z",
+    "updatedAt": "2026-03-20T06:20:52Z",
+    "url": "https://gist.github.com/ethanhuangcst/db04babed755c7dfa9ba8e5c7f9008c8",
+    "description": "TRAE CN - traecontextgist",
+    "localPath": "/Users/ethanhuang/code/trae-context-gist.ai/.trae/notes/traecontextgist/context_2026-03-20T06-20-51-052Z.json",
     "syncStatus": "synced"
   }
 }
