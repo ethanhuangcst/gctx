@@ -1,4 +1,4 @@
-# gctx
+# ctxg
 
 Context sync tool - 整理对话上下文并同步到 GitHub Gist
 
@@ -8,23 +8,23 @@ Context sync tool - 整理对话上下文并同步到 GitHub Gist
 
 ```bash
 # 全局安装
-npm install -g gctx
+npm install -g ctxg
 
 # 或使用 npx（无需安装）
-npx gctx --help
+npx ctxg --help
 ```
 
 ## 快速开始
 
 ```bash
 # 1. 配置 GitHub Token
-gctx config --token ghp_your_token_here
+ctxg config --token ghp_your_token_here
 
 # 2. 同步上下文
-gctx sync
+ctxg sync
 
 # 3. 查看笔记列表
-gctx list
+ctxg list
 ```
 
 ## 命令
@@ -32,9 +32,9 @@ gctx list
 ### `sync` (别名: `s`) - 同步上下文
 
 ```bash
-gctx sync [options]
+ctxg sync [options]
 # 或简写
-gctx s
+ctxg s
 
 选项:
   -p, --project <name>  指定项目名称（默认从当前目录提取）
@@ -44,9 +44,9 @@ gctx s
 ### `list` (别名: `l`) - 列出笔记
 
 ```bash
-gctx list [options]
+ctxg list [options]
 # 或简写
-gctx l
+ctxg l
 
 选项:
   -p, --project <name>  筛选指定项目的笔记
@@ -56,9 +56,9 @@ gctx l
 ### `config` (别名: `c`) - 配置
 
 ```bash
-gctx config [options]
+ctxg config [options]
 # 或简写
-gctx c
+ctxg c
 
 选项:
   -t, --token <token>   设置 GitHub Token
@@ -68,15 +68,15 @@ gctx c
 ### `init` (别名: `i`) - 初始化项目
 
 ```bash
-gctx init
+ctxg init
 # 或简写
-gctx i
+ctxg i
 ```
 
 ## 获取 GitHub Token
 
 1. 访问 https://github.com/settings/tokens/new
-2. Note: `gctx`
+2. Note: `ctxg`
 3. Expiration: 选择 `Custom` → 设置 1 年后
 4. Select scopes: ✅ `gist`
 5. 点击 Generate token，复制保存
@@ -84,12 +84,12 @@ gctx i
 ## 目录结构
 
 ```
-~/.gctx/                       # 全局配置目录
+~/.ctxg/                       # 全局配置目录
 ├── config.json                # 配置文件（Token）
 └── gist-mapping.json          # 项目-Gist 映射
 
 your-project/
-└── gctx-notes/                # 本地笔记
+└── ctxg-notes/                # 本地笔记
     ├── context_2026-03-20.json
     └── ...
 ```
@@ -98,17 +98,17 @@ your-project/
 
 | 工具 | 使用方式 |
 |------|---------|
-| TRAE CN | `npx gctx sync` |
-| Cursor | `npx gctx sync` |
-| Claude Code | `npx gctx sync` |
-| 终端 | `gctx sync` |
+| TRAE CN | `npx ctxg sync` |
+| Cursor | `npx ctxg sync` |
+| Claude Code | `npx ctxg sync` |
+| 终端 | `ctxg sync` |
 
 ## 故障排除
 
 | 问题 | 解决方案 |
 |------|---------|
-| Token 未配置 | 运行 `gctx config --token <your-token>` |
-| 笔记位置错误 | 检查项目根目录下的 `gctx-notes/` |
+| Token 未配置 | 运行 `ctxg config --token <your-token>` |
+| 笔记位置错误 | 检查项目根目录下的 `ctxg-notes/` |
 | Gist 上传失败 | 检查 Token 权限和有效期；本地笔记仍可用 |
 
 ---
