@@ -98,40 +98,31 @@ else
     echo "✅ 依赖已存在"
 fi
 
-# 步骤 4：创建项目配置
+# 步骤 4：复制技能文件到项目目录（关键！）
 echo ""
-echo "📄 步骤 4/4：创建项目配置..."
+echo "📄 步骤 4/4：配置项目技能..."
 cd "$PROJECT_DIR"
 
-# 检查是否已有配置
-if [ -f .trae/config.json ]; then
-    if grep -q "trae-context-gist" .trae/config.json; then
-        echo "✅ 项目配置已存在"
-    else
-        # 备份现有配置
-        cp .trae/config.json .trae/config.json.backup.$(date +%Y%m%d%H%M%S)
-        echo "✅ 已备份现有配置"
-        
-        # 添加技能到配置（需要 jq）
-        if command -v jq &> /dev/null; then
-            jq '.skills += [{"name": "trae-context-gist", "path": "~/.trae/skills/trae-context-gist", "enabled": true}]' \
-                .trae/config.json > .trae/config.json.tmp
-            mv .trae/config.json.tmp .trae/config.json
-            echo "✅ 已添加技能到配置"
-        else
-            echo "⚠️  请手动添加以下内容到 .trae/config.json："
-            echo '{"name":"trae-context-gist","path":"~/.trae/skills/trae-context-gist","enabled":true}'
-        fi
-    fi
-else
-    # 创建新的配置文件
-    mkdir -p .trae
-    cat > .trae/config.json << 'EOF'
+# 创建项目技能目录
+mkdir -p .trae/skills
+
+# 复制技能文件到项目目录
+echo "正在复制技能文件到项目目录..."
+cp -r ~/.trae/skills/trae-context-gist .trae/skills/
+
+# 创建 .env 文件的符号链接或复制
+if [ -f ~/.trae/skills/trae-context-gist/.env ]; then
+    cp ~/.trae/skills/trae-context-gist/.env .trae/skills/trae-context-gist/.env
+    echo "✅ GitHub Token 已复制到项目"
+fi
+
+# 创建配置文件（使用相对路径）
+cat > .trae/config.json << 'EOF'
 {
   "skills": [
     {
       "name": "trae-context-gist",
-      "path": "~/.trae/skills/trae-context-gist",
+      "path": "./skills/trae-context-gist",
       "enabled": true,
       "schedule": "hourly",
       "description": "自动整理对话上下文并存储到 GitHub Gist"
@@ -145,8 +136,8 @@ else
   }
 }
 EOF
-    echo "✅ 项目配置已创建"
-fi
+
+echo "✅ 项目配置已创建"
 
 # 完成
 echo ""
@@ -156,7 +147,8 @@ echo "======================================"
 echo ""
 echo "📁 项目目录：$PROJECT_DIR"
 echo "📄 配置文件：.trae/config.json"
-echo "🔑 Token 文件：~/.trae/skills/trae-context-gist/.env"
+echo "📂 技能目录：.trae/skills/trae-context-gist"
+echo "🔑 Token 文件：.trae/skills/trae-context-gist/.env"
 echo ""
 echo "🎉 现在可以在 TRAE 中使用："
 echo "   输入 '整理上下文' 测试技能"
