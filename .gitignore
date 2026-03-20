@@ -18,13 +18,21 @@ gist-mapping.json
 
 # Local notes
 notes/
+trae-content-gist-notes/
 
 # Test files
 test-*.js
 test-all-features.js
+run-sync.js
 
 # Deployment
 trae-context-gist-deploy.tar.gz
+
+# Old files
+index.js.bak
+index.json
+setup.sh
+SKILL.md
 
 # IDE
 .vscode/
