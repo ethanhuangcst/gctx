@@ -14,19 +14,16 @@ PROJECT_DIR=$(pwd)
 
 # 步骤 1：检查全局技能是否已安装
 echo "📦 步骤 1/4：检查全局技能..."
-if [ ! -d ~/.trae/skills/trae-context-gist ]; then
-    echo "❌ 全局技能未安装，正在安装..."
-    mkdir -p ~/.trae/skills
-    git clone https://github.com/ethanhuangcst/trae-context-gist.git ~/.trae/skills/trae-context-gist
-    echo "✅ 全局技能已安装"
-else
-    echo "✅ 全局技能已存在"
-    
-    # 更新全局技能
-    echo "🔄 更新全局技能..."
-    cd ~/.trae/skills/trae-context-gist
-    git pull origin main || true
+if [ -d ~/.trae/skills/trae-context-gist ]; then
+    echo "✅ 全局技能已存在，删除旧版本..."
+    rm -rf ~/.trae/skills/trae-context-gist
 fi
+
+echo "📥 正在从 GitHub 下载最新版本..."
+mkdir -p ~/.trae/skills
+git clone https://github.com/ethanhuangcst/trae-context-gist.git ~/.trae/skills/trae-context-gist
+rm -rf ~/.trae/skills/trae-context-gist/.git
+echo "✅ 全局技能已安装（无 Git 历史，纯安装目录）"
 
 # 步骤 2：检查 GitHub Token
 echo ""
