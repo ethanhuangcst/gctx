@@ -42,6 +42,21 @@
 
 ## 快速部署（3 步）
 
+### 🚀 一键配置（推荐）
+
+在现有项目中运行：
+
+```bash
+# 下载并运行配置脚本
+curl -fsSL https://raw.githubusercontent.com/ethanhuangcst/trae-context-gist/main/quick-setup.sh | bash
+```
+
+或使用详细配置脚本：
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/ethanhuangcst/trae-context-gist/main/configure-project.sh | bash
+```
+
 ### 步骤 1：安装依赖
 ```bash
 cd .trae/skills/trae-context-gist
