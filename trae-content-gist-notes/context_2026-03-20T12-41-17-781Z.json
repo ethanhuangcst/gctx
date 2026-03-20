@@ -1,0 +1,32 @@
+{
+  "summary": "对话包含 7 个任务、4 个关键点和 4 个决策",
+  "keyPoints": [
+    "TRAE 文件操作权限基于当前工作区目录",
+    "新机器部署：curl -fsSL https://raw.githubusercontent.com/ethanhuangcst/trae-context-gist/main/setup.sh | bash",
+    "项目名称从 process.cwd() 提取，不再从对话内容提取",
+    "GitHub 仓库和开发目录是同一个 Git 仓库"
+  ],
+  "tasks": [
+    "修复笔记目录结构：从 .trae/notes/project-name/ 改为 trae-content-gist-notes/",
+    "更新 README.md 目录结构说明",
+    "理清开发目录和全局安装目录的关系",
+    "删除 trae-context-gist.ai 目录",
+    "复制全局目录到 ~/code/trae-context-gist 作为开发目录",
+    "移除全局目录的 .git（纯安装目录）",
+    "修改 setup.sh：克隆后删除 .git 目录"
+  ],
+  "decisions": [
+    "开发目录：~/code/trae-context-gist（有 Git，用于开发和推送）",
+    "全局安装目录：~/.trae/skills/trae-context-gist（无 Git，纯安装目录）",
+    "setup.sh 每次运行都会删除旧版本，重新下载最新版本",
+    "笔记存储在项目根目录的 trae-content-gist-notes/ 下"
+  ],
+  "rawContent": "{\n  \"summary\": \"修复 trae-context-gist 技能的目录结构和部署流程\",\n  \"completedTasks\": [\n    \"修复笔记目录结构：从 .trae/notes/project-name/ 改为 trae-content-gist-notes/\",\n    \"更新 README.md 目录结构说明\",\n    \"理清开发目录和全局安装目录的关系\",\n    \"删除 trae-context-gist.ai 目录\",\n    \"复制全局目录到 ~/code/trae-context-gist 作为开发目录\",\n    \"移除全局目录的 .git（纯安装目录）\",\n    \"修改 setup.sh：克隆后删除 .git 目录\"\n  ],\n  \"keyDecisions\": [\n    \"开发目录：~/code/trae-context-gist（有 Git，用于开发和推送）\",\n    \"全局安装目录：~/.trae/skills/trae-context-gist（无 Git，纯安装目录）\",\n    \"setup.sh 每次运行都会删除旧版本，重新下载最新版本\",\n    \"笔记存储在项目根目录的 trae-content-gist-notes/ 下\"\n  ],\n  \"keyPoints\": [\n    \"TRAE 文件操作权限基于当前工作区目录\",\n    \"新机器部署：curl -fsSL https://raw.githubusercontent.com/ethanhuangcst/trae-context-gist/main/setup.sh | bash\",\n    \"项目名称从 process.cwd() 提取，不再从对话内容提取\",\n    \"GitHub 仓库和开发目录是同一个 Git 仓库\"\n  ],\n  \"timestamp\": \"2026-03-20T12:41:17.767Z\"\n}",
+  "timestamp": "2026-03-20T12:41:17.781Z",
+  "conversationLength": 1,
+  "metadata": {
+    "version": "1.0.0",
+    "skill": "trae-context-gist",
+    "format": "json"
+  }
+}

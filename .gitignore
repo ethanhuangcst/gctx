@@ -12,13 +12,14 @@ lerna-debug.log*
 .env.development.local
 .env.test.local
 .env.production.local
+.npmrc
 
 # Gist mapping (local only)
 gist-mapping.json
 
 # Local notes
 notes/
-trae-content-gist-notes/
+samectx-notes/
 
 # Test files
 test-*.js

@@ -113,4 +113,4 @@ your-project/
 
 ---
 
-**GitHub**: https://github.com/ethanhuangcst/gctx
+**GitHub**: https://github.com/ethanhuangcst/samectx
