@@ -46,10 +46,8 @@ function extractProjectName(conversationHistory) {
  * @returns {string} 项目笔记目录路径
  */
 function getProjectNotesDir(projectName) {
-  // 优先级 1: 使用环境变量指定的目录
   if (process.env.LOCAL_NOTES_DIR) {
     const notesDir = process.env.LOCAL_NOTES_DIR;
-    // 如果是相对路径，转换为绝对路径
     if (!path.isAbsolute(notesDir)) {
       return path.join(__dirname, notesDir, projectName);
     } else {
@@ -57,23 +55,40 @@ function getProjectNotesDir(projectName) {
     }
   }
   
-  // 优先级 2: 使用项目目录下的 .trae/notes 文件夹
-  // 尝试找到项目根目录
-  let projectRoot = process.cwd();
+  let projectRoot = null;
   
-  // 从当前目录向上查找 .trae 目录
-  let currentDir = projectRoot;
-  for (let i = 0; i < 10; i++) {
-    if (fs.existsSync(path.join(currentDir, '.trae'))) {
+  let currentDir = __dirname;
+  for (let i = 0; i < 20; i++) {
+    const traeDir = path.join(currentDir, '.trae');
+    if (fs.existsSync(traeDir)) {
       projectRoot = currentDir;
       break;
     }
+    
     const parentDir = path.dirname(currentDir);
     if (parentDir === currentDir) break;
     currentDir = parentDir;
   }
   
-  // 在项目目录下创建 .trae/notes 文件夹
+  if (!projectRoot) {
+    currentDir = process.cwd();
+    for (let i = 0; i < 20; i++) {
+      const traeDir = path.join(currentDir, '.trae');
+      if (fs.existsSync(traeDir)) {
+        projectRoot = currentDir;
+        break;
+      }
+      
+      const parentDir = path.dirname(currentDir);
+      if (parentDir === currentDir) break;
+      currentDir = parentDir;
+    }
+  }
+  
+  if (!projectRoot) {
+    projectRoot = path.dirname(path.dirname(path.dirname(__dirname)));
+  }
+  
   const projectNotesDir = path.join(projectRoot, '.trae', 'notes', projectName);
   
   return projectNotesDir;
