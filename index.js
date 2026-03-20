@@ -55,38 +55,37 @@ function getProjectNotesDir(projectName) {
     }
   }
   
-  let projectRoot = null;
+  const globalTraeDir = path.join(process.env.HOME || '/Users/ethanhuang', '.trae');
   
-  let currentDir = __dirname;
-  for (let i = 0; i < 20; i++) {
-    const traeDir = path.join(currentDir, '.trae');
-    if (fs.existsSync(traeDir)) {
-      projectRoot = currentDir;
-      break;
-    }
-    
-    const parentDir = path.dirname(currentDir);
-    if (parentDir === currentDir) break;
-    currentDir = parentDir;
-  }
-  
-  if (!projectRoot) {
-    currentDir = process.cwd();
+  function findProjectRoot(startDir) {
+    let currentDir = startDir;
     for (let i = 0; i < 20; i++) {
       const traeDir = path.join(currentDir, '.trae');
       if (fs.existsSync(traeDir)) {
-        projectRoot = currentDir;
-        break;
+        if (currentDir !== globalTraeDir && !currentDir.startsWith(globalTraeDir + path.sep)) {
+          return currentDir;
+        }
       }
       
       const parentDir = path.dirname(currentDir);
       if (parentDir === currentDir) break;
       currentDir = parentDir;
     }
+    return null;
+  }
+  
+  let projectRoot = findProjectRoot(process.cwd());
+  
+  if (!projectRoot) {
+    projectRoot = findProjectRoot(__dirname);
   }
   
   if (!projectRoot) {
-    projectRoot = path.dirname(path.dirname(path.dirname(__dirname)));
+    projectRoot = findProjectRoot(path.dirname(path.dirname(path.dirname(__dirname))));
+  }
+  
+  if (!projectRoot) {
+    projectRoot = process.cwd();
   }
   
   const projectNotesDir = path.join(projectRoot, '.trae', 'notes', projectName);
